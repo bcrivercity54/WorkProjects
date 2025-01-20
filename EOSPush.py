@@ -8,6 +8,7 @@ import glob
 import fnmatch
 from os import listdir
 from os.path import isfile, join
+import pandas as pd
 
 testDict = {}
 
@@ -27,88 +28,87 @@ class EOS(QDialog):
 
     #def loaddata(self):
 
-
-
-
     def getbwi(self=None):
         print("in the func")
         custtext = self.textCustomer.toPlainText()
         refText = self.refNum.toPlainText()
-        #print("refText",refText)
+        #print("refText",type(refText))
 
-        print(custtext,refText)
+        #print(custtext,refText)
         #joinRootToCustomer(custtext)
 
         rootPath = r'C:\Users\brian\Documents\Spreadsheets\Work_Instructions'
 
         searchPath = os.path.join(rootPath, custtext)
-        print("search path",searchPath)
+        #print("search path",searchPath)
 
-        pattern = refText
+        #pattern = "*refText*"
         #print("pattern",type(refText))
         # Search the folder for the entered ref number add to a list or dictionary
 
         fileList = []
 
-        #for root, dirs, files in os.walk(searchPath):
-            #print(files,pattern)
-            #if fnmatch.filter(files,'*pattern*'):
+        for root, dirs, files in os.walk(searchPath):
+            #print("YABBA",pattern)
+            if fnmatch.filter(files,"4283348"):
+                fileList.append(files)
 
 
-        #f fnmatch.filter(i,"*_4283348_*.xlsx"):
-                # fileList.append(i)
-                #print("Found files",files)
-        #for root, dirs, files in os.walk(searchPath):
-           #print(searchPath)
-            #if fnmatch.filter(files, "*_refText_*.xlsx"):
-                #print("if",files)
-        # fileList.append(i)
-            #for filename in fnmatch.filter(files,'*_refText_*.xlsx'):
-                #fileList.append(filename)
-                #print("FUDGE",filename)
-
-
-        #for x in fileList:
-            #print(x)
-            #print("End of processing")
-        #for i in os.listdir(searchPath):
-           #print("searchpath",searchPath)
-
-            #if fnmatch.filter(i,"*_refText_*.xlsx"):
-                #fileList.append(i)
-
-                #print(i)
         fileList = ["GE_MR_OEM_4242234_9X3M2Y.xlsm", "GE_MR_OEM_4242234_8X3M2Y.xlsm", "GE_MR_OEM_4242234_7X3M2Y.xlsm"]
 
-        customerInfoList = []
+        mergelist = []
+        customerInfoList = ["customer"]
         refNumList = []
-        serviceTagList = []
+        servicetaglist = []
         techName = ['Brian', 'Brian', 'Brian']
+        keys = {"customer","refnum","servicetag"}
+        wiDict = dict([(key,[]) for key in keys])
+        print(wiDict)
+
         r = 0
         for item in fileList:
-            custtDict = {"cust":item[-35:-20]}
-            #,"customer":item[-11:-5],"servicetag":item[-19:-13]}
-            #reftDict = {r: item[-35:-20], "customer": item[-11:-5], "servicetag": item[-19:-13]}
-            #stDict = {r: item[-35:-20], "customer": item[-11:-5], "servicetag": item[-19:-13]}
-            #testDict.update({r:item[-19:-13]})
-            #testDict.update({r:item[-11:-5]})
-            r = r + 1
+            #print("item",item)
+            wiDict["customer"].append(item[-35:-20])
+            wiDict["refnum"].append(item[-19:-13])
+            wiDict["servicetag"].append(item[-11:-5])
+            print(wiDict)
+           # customerInfoList.append(item[-35:-20])
+           #custdict.append()
             #refNumList.append(item[-19:-13])
-            #testDict ={}
-           # serviceTagList.append(item[-11:-5])
+            #servicetaglist.append(item[-11:-5])
 
-        for k, v in custDict.items():
-            print("cust dict",k, v)
+        #mergelist = customerInfoList + refNumList + servicetaglist
 
-        data = []
-        data.append(customerInfoList)
-        data.append(refNumList)
-        data.append(serviceTagList)
-        data.append(techName)
+        #for x in customerInfoList:
+            #print("merglist",x)
 
-        print(data)
-        data = pd.DataFrame(data).transpose()
-        data.columns = ['Customer Name', 'Ref#', 'Service', 'Tech']
+        def loaddata(self,wiDict):
+            print("in load data")
+            row = 0
+            self.tableWidget.setRowCount(len(wiDict))
+            for wi in wiDict:
+                self.tableWidget.setItem(row,0,QtWidgets.QTableWidgetItem(wi["customer"]))
+
+            row = row+1
+
+        #self.tableWidget.setRowCount(len(merglist))
+        #for wi in mergelist:
+            #self.tableWidget.setItem(row,0,QtWidgets.QTableWidgetItem(mergelist[""]))
+        #for k, v in custDict.items():
+            #print("cust dict",k, v)
+
+
+        df = pd.DataFrame({'col':"FUCK"})
+        print("test")
+        print(df)
+       # data = mergelist
+        #data.append(refNumList)
+       #data.append(serviceTagList)
+        #data.append(techName)
+
+        #print(data)
+        #data = pd.DataFrame(data).transpose()
+        #data.columns = ['Customer Name', 'Ref#', 'Service', 'Tech']
 
     def joinRootToCustomer(custName):
         print("in join fun",custName)
